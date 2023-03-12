@@ -28,6 +28,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+          - macos-latest
 
         exclude:
           - python-version: "pypy-3.8"
