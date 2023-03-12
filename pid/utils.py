@@ -22,7 +22,7 @@ def determine_pid_directory():
     else:
         uid = os.geteuid() if hasattr(os, "geteuid") else os.getuid()  # pylint: disable=no-member
 
-        paths = [f"/run/user/{uid}/", f"/var/run/user/{uid}/", "/run/", "/var/run/"]
+        paths = [f"/run/user/{uid}/", f"/var/run/user/{uid}/", "/run/", "/var/run/", os.path.expanduser('~')]
 
     for path in paths:
         if effective_access(os.path.realpath(path), os.W_OK | os.X_OK):
