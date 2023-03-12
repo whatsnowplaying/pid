@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version"]
+name = "pid"
+description = "Pidfile featuring stale detection and file-locking, can also be used as context-manager or decorator"
+readme = "README.rst"
+authors = [
+  { name = "Tbrs", email = "trbs@trbs.net"},
+  { name = "nnathan"},
+  { name = "xorboo"},
+  { name = "Jair Henrique"},
+  { name = "Allen Wittenauer"}
+]
+license = {text = "Apache-2.0"}
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: Implementation :: PyPy',
+]
+keywords = ["pid", "pidfile", "context manager", "decorator"]
+dependencies = [
+    'psutil>=5.4.8 ; sys_platform == "win32"',
+]
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = ['pid']
+
+[tool.setuptools.dynamic]
+version = { attr = "pid.__version__"}
+
+[project.urls]
+repository = "https://github.com/whatsnowplaying/pid/"
+
+#extras_require={
+#    'tests': [
+#        'pytest',
+#    ]
+#},
