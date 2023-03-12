@@ -99,10 +99,10 @@ class PidFileBase(BaseObject):
             self._is_setup = True
 
     def _make_filename(self):
-        if pidname is None:
-            pidname = f"{os.path.basename(sys.argv[0])}.pid"
-        if self.enforce_dotpid_postfix and not pidname.endswith(".pid"):
-            self.pidname = f"{pidname}.pid"
+        if self.pidname is None:
+            self.pidname = f"{os.path.basename(sys.argv[0])}.pid"
+        if self.enforce_dotpid_postfix and not self.pidname.endswith(".pid"):
+            self.pidname = f"{self.pidname}.pid"
 
         if self.piddir is None:
             if os.path.isdir(DEFAULT_PID_DIR) and self.force_tmpdir is False:
