@@ -56,7 +56,7 @@ def test_pid_context_manager():
 def test_pid_pid():
     with pid.PidFile() as pidfile:
         pidnr = int(open(pidfile.filename, "r").readline().strip())
-        assert pidnr == os.getpid(), "%s != %s" % (pidnr, os.getpid())
+        assert pidnr == os.getpid(), f"{pidnr} != {os.getpid()}"
     assert not os.path.exists(pidfile.filename)
 
 
@@ -70,7 +70,9 @@ def test_pid_pid_win32():
         # Python3 throws IOError(13, Access denied) instead, which we are catching with raising_windows_io_error()
         if sys.version_info.major < 3:
             pidtext = read_pidfile_data()
-            assert pidtext == "", "Read '%s' from locked file on Windows with Python2" % (pidtext)
+            assert (
+                pidtext == ""
+            ), f"Read '{pidtext}' from locked file on Windows with Python2"
         else:
             with raising_windows_io_error():
                 pidtext = read_pidfile_data()
@@ -437,7 +439,7 @@ def test_pid_default_term_signal():
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
 
     with pid.PidFile() as pidfile:
-        assert callable(signal.getsignal(signal.SIGTERM)) is True
+        assert callable(signal.getsignal(signal.SIGTERM))
 
     assert not os.path.exists(pidfile.filename)
 

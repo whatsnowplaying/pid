@@ -102,9 +102,9 @@ class PidFileBase(BaseObject):
         pidname = self.pidname
         piddir = self.piddir
         if pidname is None:
-            pidname = "%s.pid" % os.path.basename(sys.argv[0])
+            pidname = f"{os.path.basename(sys.argv[0])}.pid"
         if self.enforce_dotpid_postfix and not pidname.endswith(".pid"):
-            pidname = "%s.pid" % pidname
+            pidname = f"{pidname}.pid"
         if piddir is None:
             if os.path.isdir(DEFAULT_PID_DIR) and self.force_tmpdir is False:
                 piddir = DEFAULT_PID_DIR
@@ -112,25 +112,22 @@ class PidFileBase(BaseObject):
                 piddir = tempfile.gettempdir()
 
         if os.path.exists(piddir) and not os.path.isdir(piddir):
-            raise IOError("Pid file directory '%s' exists but is not a directory" % piddir)
+            raise IOError(f"Pid file directory '{piddir}' exists but is not a directory")
         if not os.path.isdir(piddir):
             os.makedirs(piddir)
         if not effective_access(piddir, os.R_OK):
-            raise IOError("Pid file directory '%s' cannot be read" % piddir)
+            raise IOError(f"Pid file directory '{piddir}' cannot be read")
         if not effective_access(piddir, os.W_OK | os.X_OK):
-            raise IOError("Pid file directory '%s' cannot be written to" % piddir)
+            raise IOError(f"Pid file directory '{piddir}' cannot be written to")
 
-        filename = os.path.abspath(os.path.join(piddir, pidname))
-        return filename
+        return os.path.abspath(os.path.join(piddir, pidname))
 
     def _register_term_signal(self):
         register_term_signal_handler = self.register_term_signal_handler
         if register_term_signal_handler == "auto":
-            if signal.getsignal(signal.SIGTERM) == signal.SIG_DFL:
-                register_term_signal_handler = True
-            else:
-                register_term_signal_handler = False
-
+            register_term_signal_handler = (
+                signal.getsignal(signal.SIGTERM) == signal.SIG_DFL
+            )
         if callable(register_term_signal_handler):
             signal.signal(signal.SIGTERM, register_term_signal_handler)
         elif register_term_signal_handler:
@@ -143,10 +140,10 @@ class PidFileBase(BaseObject):
     def _inner_check(self, fh):
         try:
             fh.seek(0)
-            pid_str = fh.read(16).split("\n", 1)[0].strip()
-            if not pid_str:
+            if pid_str := fh.read(16).split("\n", 1)[0].strip():
+                pid = int(pid_str)
+            else:
                 return PID_CHECK_EMPTY
-            pid = int(pid_str)
         except (IOError, ValueError) as exc:
             self.close(fh=fh)
             raise PidFileUnreadableError(exc)
