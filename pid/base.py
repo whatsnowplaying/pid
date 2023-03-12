@@ -99,28 +99,27 @@ class PidFileBase(BaseObject):
             self._is_setup = True
 
     def _make_filename(self):
-        pidname = self.pidname
-        piddir = self.piddir
         if pidname is None:
             pidname = f"{os.path.basename(sys.argv[0])}.pid"
         if self.enforce_dotpid_postfix and not pidname.endswith(".pid"):
-            pidname = f"{pidname}.pid"
-        if piddir is None:
+            self.pidname = f"{pidname}.pid"
+
+        if self.piddir is None:
             if os.path.isdir(DEFAULT_PID_DIR) and self.force_tmpdir is False:
-                piddir = DEFAULT_PID_DIR
+                self.piddir = DEFAULT_PID_DIR
             else:
-                piddir = tempfile.gettempdir()
+                self.piddir = tempfile.gettempdir()
 
-        if os.path.exists(piddir) and not os.path.isdir(piddir):
-            raise IOError(f"Pid file directory '{piddir}' exists but is not a directory")
-        if not os.path.isdir(piddir):
-            os.makedirs(piddir)
-        if not effective_access(piddir, os.R_OK):
-            raise IOError(f"Pid file directory '{piddir}' cannot be read")
-        if not effective_access(piddir, os.W_OK | os.X_OK):
-            raise IOError(f"Pid file directory '{piddir}' cannot be written to")
+        if os.path.exists(self.piddir) and not os.path.isdir(self.piddir):
+            raise IOError(f"Pid file directory '{self.piddir}' exists but is not a directory")
+        if not os.path.isdir(self.piddir):
+            os.makedirs(self.piddir)
+        if not effective_access(self.piddir, os.R_OK):
+            raise IOError(f"Pid file directory '{self.piddir}' cannot be read")
+        if not effective_access(self.piddir, os.W_OK | os.X_OK):
+            raise IOError(f"Pid file directory '{self.piddir}' cannot be written to")
 
-        return os.path.abspath(os.path.join(piddir, pidname))
+        return os.path.abspath(os.path.join(self.piddir, self.pidname))
 
     def _register_term_signal(self):
         register_term_signal_handler = self.register_term_signal_handler
