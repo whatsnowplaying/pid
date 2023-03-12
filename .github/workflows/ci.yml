@@ -32,9 +32,9 @@ jobs:
 
         exclude:
           - python-version: "pypy-3.8"
-            os: [windows-latest, macos-latest]
+            os: windows-latest
           - python-version: "pypy-3.9"
-            os: [windows-latest, macos-latest]
+            os: windows-latest
 
     steps:
       - uses: actions/checkout@v3
